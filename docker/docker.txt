@@ -1,0 +1,54 @@
+--- docker container ---
+
+docker container ls
+docker container ls -qa
+
+docker container run diamol/ch02-hello-diamol
+docker container run --interactive --tty diamol/base
+docker container run --detach --publish 8088:80 diamol/ch02-hello-diamol-web
+docker container run -d --name web-ping diamol/ch03-web-ping
+docker container run --env TARGET=bing.com diamol/ch03-web-ping
+docker container run ubuntu hostname
+docker container run -d -p 802:80 --network nat image-gallery
+docker container run -d --name t3 --volumes-from todo1 diamol/ch06-todo-list
+docker container run -d -p 8011:80 -v todo-list:$target --name todo-v1 diamol/ch06-todo-list
+docker container run --name todo-configured -d -p 8013:80 --mount type=bind,source=$source,target=$target,readonly diamol/ch06-todo-list
+
+docker container rm --force $(docker container ls --all --quiet)
+
+docker container exec bf ls /usr/local/apache2/htdocs
+docker container exec -it cont_name /bin/bash
+docker container exec -it -u 0 f32_dock /bin/bash
+docker container exec -it --user root fed_cont /bin/bash
+
+docker container start --attach f1
+docker container start rn1
+
+docker container stop bf
+
+docker container top 27
+docker container logs 27
+docker container stats
+docker container inspect 27
+docker container inspect --format '{{.Mounts}}' todo1
+
+--- docker image ---
+
+docker image pull diamol/ch03-web-ping
+
+docker image build --tag web-ping .
+
+docker image ls
+
+docker image history web-ping
+
+--- others ---
+
+docker network create nat
+docker info
+docker system df
+docker cp ./index.html bf:/usr/local/apache2/htdocs/index.html
+docker container cp url.txt f1:/input.txt
+docker volume ls
+docker volume create todo-list
+docker system prune --volumes
