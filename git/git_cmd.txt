@@ -1,0 +1,34 @@
+gitk
+
+--- show changed files
+$ git log --name-only
+
+$ git blame --reverse <SHA1 of commit in past where you know line existed>..HEAD -- <filename>
+
+$ git log -S "xyz"
+$ git log -G "xyz"
+
+--- tracing the changes of a function
+$ git log -L :f1:a.cpp
+
+--- Show me the commits that are in delete_candidate_branch and are NOT in current_branch.
+--- The --no-merges option tells Git not to include commits that have been merged in already.
+$ git log delete_candidate_branch ^current_branch --no-merges
+
+--- see the set of commits that are in topic but not in feature.
+$ git log --oneline topic ^feature
+
+--- Smudge is essentially a way to say, “For the matching items in the Git attributes file, run a set of code (a filter) when those items are checked out of Git.”
+--- Clean is the same, but it runs designated code when the matching items are committed back into Git.
+$ git config filter.insertDivisionABC.smudge "sed 's/%div/ABC/'"
+$ git config filter.insertDivisionABC.clean "sed 's/ision:ABC/ision:%div/'"
+$ echo "div*.html filter=insertDivisionABC" > .gitattributes
+
+--- add notes
+$ git notes add -m "add f1" fd789a433db21958df0
+
+--- short log
+$ git log --oneline
+
+
+
