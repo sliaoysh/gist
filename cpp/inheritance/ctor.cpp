@@ -1,0 +1,26 @@
+#include <iostream>
+using namespace std;
+
+class base
+{
+public:
+    base(){ cout << "base default ctor" << endl; }
+    base(const base&){ cout << "base copy ctor" << endl; }
+    base(base&&){ cout << "base move ctor" << endl; }
+};
+
+class derived : public base
+{
+public:
+    derived(){ cout << "derived default ctor" << endl; }
+    derived(const base&){ cout << "derived copy ctor" << endl; }
+    derived(base&&){ cout << "derived move ctor" << endl; }
+};
+
+int main()
+{
+    derived d1;
+    derived d2 = d1;
+    derived d3 = move(d1);
+    return 0;
+}
