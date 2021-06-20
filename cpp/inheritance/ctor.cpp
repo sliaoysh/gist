@@ -13,14 +13,17 @@ class derived : public base
 {
 public:
     derived(){ cout << "derived default ctor" << endl; }
-    derived(const base&){ cout << "derived copy ctor" << endl; }
-    derived(base&&){ cout << "derived move ctor" << endl; }
+    derived(const derived& d): base{d}{ cout << "derived copy ctor" << endl; }
+    derived(derived&& d): base{move(d)}{ cout << "derived move ctor" << endl; }
 };
 
 int main()
 {
     derived d1;
+    cout << "==========" << endl;
     derived d2 = d1;
-    derived d3 = move(d1);
+    cout << "==========" << endl;
+    derived d3 = move(d2);
+    cout << "==========" << endl;
     return 0;
 }
