@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
         board.output(std::cout);
         std::cout << std::flush;
         board.evolve();
-        std::this_thread::sleep_for(1s);
+        std::this_thread::sleep_for(100ms);
     }
     return 0;
 }
