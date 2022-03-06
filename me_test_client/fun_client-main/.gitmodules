@@ -1,0 +1,6 @@
+[submodule "external/build-tools"]
+	path = external/build-tools
+	url = ../build-tools.git
+[submodule "external/common_cpp"]
+	path = external/common_cpp
+	url = ../common_cpp.git

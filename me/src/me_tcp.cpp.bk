@@ -1,0 +1,49 @@
+#include "processor_tcp.hpp"
+
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <string>
+using namespace std;
+
+vector<fun::client::InstrumentId> read_instrument_id(const char* inst_file_path)
+{
+    ifstream inst_file(inst_file_path);
+    string str;
+    inst_file >> str;
+    int inst;
+    vector<fun::client::InstrumentId> instruments;
+
+    while (inst_file >> inst)
+    {
+        instruments.push_back(inst);
+    }
+    return instruments;
+}
+
+int main(int argc, const char* argv[])
+{
+    if (argc != 5)
+    {
+        cout << "Usage: me server_ip port -i [instrument_file]" << endl;
+        return 1;
+    }
+
+    const char* server_ip = argv[1];
+    const int port = atoi(argv[2]);
+    const char* inst_file_path = argv[4];
+
+    vector<fun::client::InstrumentId> instruments = read_instrument_id(inst_file_path);
+    processor pro{server_ip, port, instruments};
+    std::cout << "start..." << std::endl;
+
+    try
+    {
+        pro.run();
+    }
+    catch(...)
+    {
+        cout << "end" << endl;
+    }
+    return 0;
+}

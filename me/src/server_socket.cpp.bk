@@ -1,0 +1,85 @@
+#include "server_socket.hpp"
+
+#include <arpa/inet.h>
+#include <iostream>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+server_socket::server_socket(const char* ip, const int port)
+{
+    fd_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (fd_ == -1)
+    {
+        std::cout << "socket error" << std::endl;
+        return;
+    }
+
+    int yes = 1;
+    if (setsockopt(fd_, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+    {
+        std::cout << "SO_REUSEADDR error" << std::endl;
+        return;
+    }
+
+    if (setsockopt(fd_, IPPROTO_TCP, TCP_NODELAY, &yes, sizeof(int)) == -1)
+    {
+        std::cout << "TCP_NODELAY error" << std::endl;
+        return;
+    }
+
+    sockaddr_in sockaddr{};
+    sockaddr.sin_family = AF_INET;
+    sockaddr.sin_port = htons(port);
+
+    if (inet_pton(AF_INET, ip, &sockaddr.sin_addr) <= 0)
+    {
+        std::cout << "IP error" << std::endl;
+        return;
+    }
+
+    if (bind(fd_, (struct sockaddr*)&sockaddr, sizeof(sockaddr)) == -1)
+    {
+        std::cout << "bind error" << std::endl;
+        return;
+    }
+
+    if (listen(fd_, BACKLOG) == -1)
+    {
+        std::cout << "listen error" << std::endl;
+        return;
+    }
+}
+
+void server_socket::accept_conn()
+{
+    struct sockaddr_storage client_addr;
+    unsigned int sin_size = sizeof(client_addr);
+    client_fd_ = accept(fd_, (struct sockaddr*)&client_addr, &sin_size);
+    if (client_fd_ == -1)
+    {
+        std::cout << "accept error" << std::endl;
+    }
+}
+
+char* server_socket::recv_msg()
+{
+    if (recv(client_fd_, buf_, BUF_SIZE, 0) <= 0)
+    {
+        std::cout << "server_socket recv_msg error" << std::endl;
+        throw "server_socket recv_msg error";
+    }
+    return buf_;
+}
+
+void server_socket::send_msg(const char* buf, const int size) const
+{
+    send(client_fd_, buf, size, MSG_DONTWAIT);
+}
+
+server_socket::~server_socket()
+{
+    close(fd_);
+    close(client_fd_);
+}
