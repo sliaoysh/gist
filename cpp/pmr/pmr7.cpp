@@ -1,0 +1,67 @@
+#include <array>
+#include <cstddef>
+#include <cstdint>
+#include <iostream>
+#include <iterator>
+#include <memory_resource>
+#include <unordered_map>
+#include <vector>
+using namespace std;
+
+class noisy_allocator : public pmr::memory_resource {
+    void* do_allocate(size_t bytes, size_t alignment) override {
+        cout << "+ Allocating " << bytes << " bytes @ ";
+        void* p = pmr::new_delete_resource()->allocate(bytes, alignment);
+        cout << p << '\n';
+        return p;
+    }
+ 
+    void do_deallocate(void* p, size_t bytes, size_t alignment) override {
+        cout << "- Deallocating " << bytes << " bytes @ " << p << '\n';
+        return pmr::new_delete_resource()->deallocate(p, bytes, alignment);
+    }
+ 
+    bool do_is_equal(const pmr::memory_resource& other) const noexcept override {
+        return pmr::new_delete_resource()->is_equal(other);
+    }
+};
+
+int main() {
+    noisy_allocator mem;
+    pmr::set_default_resource(&mem);
+
+    {
+        pmr::unordered_map<int,long long> v1;
+        cout << "==========" << endl;
+
+        for (int i{0}; i != 20; ++i)
+        {
+            v1[i] = i;
+            cout << "v1.size(): " << v1.size() << '\n';
+        }
+        cout << "==========" << endl;
+    }
+    cout << "---------------------" << endl;
+
+    {
+        //pmr::vector<uint8_t> buffer(1'000);
+        //pmr::monotonic_buffer_resource mem_res{data(buffer), size(buffer)};
+
+        pmr::unsynchronized_pool_resource mem_res{{2000000,0}};
+
+        //pmr::unsynchronized_pool_resource pool{{8192,0}};
+        pmr::unsynchronized_pool_resource pool{{4096,0}, &mem_res};
+
+        pmr::unordered_map<int,long long> v2{&pool};
+        //pmr::unordered_map<int,long long> v2{&mem_res};
+
+        cout << "==========" << endl;
+
+        for (int i{0}; i != 20; ++i)
+        {
+            v2[i] = i;
+            cout << "v2.size(): " << v2.size() << '\n';
+        }
+        cout << "==========" << endl;
+    }
+}
