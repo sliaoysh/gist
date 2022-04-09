@@ -1,0 +1,4 @@
+mkdir build
+cd build
+make -C ..
+./me unix_domain_sock_name -i /path/to/instrument_list.csv

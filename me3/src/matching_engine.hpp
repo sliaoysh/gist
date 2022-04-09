@@ -18,7 +18,9 @@ public:
     void cancel_order(fun::client::Xoid ex_order_id);
 
 private:
-    std::unordered_map<fun::client::InstrumentId,order_book> order_books_;
+    int order_books_index(const fun::client::InstrumentId id) const;
+
+    std::vector<order_book> order_books_;
     std::vector<order_detail> order_details_;
 
     order_book* ob_;

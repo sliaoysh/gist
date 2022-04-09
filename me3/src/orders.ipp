@@ -7,7 +7,7 @@
 template <fun::client::Side Side>
 void orders<Side>::add_order(const fun::client::Xoid ex_order_id, const Price price, const fun::client::Volume volume)
 {
-    if (top_order_price_ >= 0)
+    if (ctr_++)
     {
         if (price_compare(price, top_order_price_))
         {
@@ -39,7 +39,6 @@ void orders<Side>::add_order(const fun::client::Xoid ex_order_id, const Price pr
         top_order_price_ = price;
         top_orders_[top_index_].push_back(order_book_item{ex_order_id, volume});
     }
-    ++ctr_;
 }
 
 template <fun::client::Side Side>
@@ -102,19 +101,6 @@ int orders<Side>::price_index(const Price price) const
 }
 
 template <fun::client::Side Side>
-int orders<Side>::price_diff(const Price top_price, const Price bottom_price) const
-{
-    if constexpr (Side == fun::client::Side::buy)
-    {
-        return top_price - bottom_price;
-    }
-    else
-    {
-        return bottom_price - top_price;
-    }
-}
-
-template <fun::client::Side Side>
 int orders<Side>::price_index_above_top(const Price price) const
 {
     if constexpr (Side == fun::client::Side::buy)
@@ -151,6 +137,6 @@ orders<Side>::orders()
 {
     for (auto& v : top_orders_)
     {
-        v.reserve(800);
+        v.reserve(1024);
     }
 }

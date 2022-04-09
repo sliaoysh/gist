@@ -18,9 +18,8 @@ public:
     using price_mov_bottom_op = std::conditional_t<Side==fun::client::Side::buy, std::minus<Price>, std::plus<Price>>;
     using price_compare_pred = std::conditional_t<Side==fun::client::Side::buy, std::greater<Price>, std::less<Price>>;
 
-    //static constexpr int OB_ARRAY_SIZE = 2048;
-    static constexpr int OB_ARRAY_SIZE = 100;
-    static constexpr int init_top_index = 50;
+    static constexpr int OB_ARRAY_SIZE = 2048;
+    static constexpr int init_top_index = 1024;
 
     static constexpr price_mov_bottom_op price_mov_bottom{};
     static constexpr price_compare_pred price_compare{};
@@ -41,7 +40,6 @@ private:
 
     int price_index(Price price) const;
     int price_index_above_top(Price price) const;
-    int price_diff(Price top_price, Price bottom_price) const;
 
     std::deque<price_level> top_orders_;
 
