@@ -2,7 +2,7 @@ FROM fedora:36
 
 RUN useradd -m fed && \
     dnf update -y && \
-    dnf install -y net-tools man nano cmake git gdb valgrind cppcheck gcc-c++ clang libubsan && \
+    dnf install -y net-tools man nano cmake git gdb valgrind cppcheck gcc-c++ clang libubsan clang-tools-extra && \
     mkdir /home/fed/gist
 
 WORKDIR /home/fed
