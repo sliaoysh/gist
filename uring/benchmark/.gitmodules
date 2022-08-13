@@ -1,0 +1,6 @@
+[submodule "libs/FlameGraph"]
+	path = libs/FlameGraph
+	url = https://github.com/brendangregg/FlameGraph.git
+[submodule "libs/liburing"]
+	path = libs/liburing
+	url = https://github.com/axboe/liburing.git
